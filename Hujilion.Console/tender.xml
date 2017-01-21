@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:export xmlns="http://zakupki.gov.ru/oos/types/1" xmlns:ns2="http://zakupki.gov.ru/oos/export/1" xmlns:ns3="http://zakupki.gov.ru/oos/printform/1">
-    <ns2:fcsNotificationEF schemeVersion="6.4">
+    <ns2:fcsNotificationEM schemeVersion="6.4">
         <id>10829489</id>
         <purchaseNumber>0302100013516000408</purchaseNumber>
         <docPublishDate>2016-12-31T09:32:30.796+08:00</docPublishDate>
@@ -233,5 +233,5 @@
                 <url>http://zakupki.gov.ru/44fz/filestore/public/1.0/download/priz/file.html?uid=44DC9A1F4E930104E0530A86121F20FB</url>
             </attachment>
         </attachments>
-    </ns2:fcsNotificationEF>
+    </ns2:fcsNotificationEM>
 </ns2:export>
