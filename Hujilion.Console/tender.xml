@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:export xmlns="http://zakupki.gov.ru/oos/types/1" xmlns:ns2="http://zakupki.gov.ru/oos/export/1" xmlns:ns3="http://zakupki.gov.ru/oos/printform/1">
+    <ns2:fcsNotificationEF schemeVersion="6.4">
+        <id>10829489</id>
+        <purchaseNumber>0302100013516000408</purchaseNumber>
+        <docPublishDate>2016-12-31T09:32:30.796+08:00</docPublishDate>
+        <href>http://zakupki.gov.ru/epz/order/notice/ea44/view/common-info.html?regNumber=0302100013516000408</href>
+        <printForm>
+            <url>http://zakupki.gov.ru/epz/order/notice/printForm/viewXml.html?noticeId=10829489</url>
+        </printForm>
+        <purchaseObjectInfo>Поставка технических средств реабилитации, а именно кресел-стульев с санитарным оснащением различной модификации,  для обеспечения  инвалидов в 2017 году</purchaseObjectInfo>
+        <purchaseResponsible>
+            <responsibleOrg>
+                <regNum>03021000135</regNum>
+                <consRegistryNum>004С0200</consRegistryNum>
+                <fullName>ГОСУДАРСТВЕННОЕ УЧРЕЖДЕНИЕ-РЕГИОНАЛЬНОЕ ОТДЕЛЕНИЕ ФОНДА СОЦИАЛЬНОГО СТРАХОВАНИЯ РОССИЙСКОЙ ФЕДЕРАЦИИ ПО РЕСПУБЛИКЕ БУРЯТИЯ</fullName>
+                <postAddress>Российская Федерация, 670000, Бурятия Респ, Улан-Удэ г, УЛ БОРСОЕВА, 33</postAddress>
+                <factAddress>Российская Федерация, 670000, Бурятия Респ, Улан-Удэ г, УЛ БОРСОЕВА, 33</factAddress>
+                <INN>0323012571</INN>
+                <KPP>032601001</KPP>
+            </responsibleOrg>
+            <responsibleRole>CU</responsibleRole>
+            <responsibleInfo>
+                <orgPostAddress>Российская Федерация, 670000, Бурятия Респ, Улан-Удэ г, УЛ БОРСОЕВА, 33</orgPostAddress>
+                <orgFactAddress>Российская Федерация, 670000, Бурятия Респ, Улан-Удэ г, УЛ БОРСОЕВА, 33</orgFactAddress>
+                <contactPerson>
+                    <lastName>Барышникова</lastName>
+                    <firstName>Оксана</firstName>
+                    <middleName>Владимировна</middleName>
+                </contactPerson>
+                <contactEMail>zakupki@ro3.fss.ru</contactEMail>
+                <contactPhone>7-3012-299906</contactPhone>
+            </responsibleInfo>
+        </purchaseResponsible>
+        <placingWay>
+            <code>EAP44</code>
+            <name>Электронный аукцион</name>
+        </placingWay>
+        <ETP>
+            <code>ETP_RTS</code>
+            <name>РТС-тендер</name>
+            <url>http://www.rts-tender.ru</url>
+        </ETP>
+        <procedureInfo>
+            <collecting>
+                <startDate>2016-12-31T09:32:30+08:00</startDate>
+                <place>Электронная площадка в информационно-телекоммуникационной сети «Интернет» - www.rts-tender.ru.</place>
+                <order>Участник электронного аукциона вносит денежные средства на лицевой счет участника закупки, открытый для проведения операций по обеспечению участия в электронном аукционе на счете оператора электронной площадки.
+                    Участие в электронном аукционе возможно при наличии на лицевом счете участника закупки, открытом для проведения операций по обеспечению участия в таком аукционе на счете оператора электронной площадки, денежных средств, в отношении которых не осуществлено блокирование операций по лицевому счету, в размере не менее чем размер обеспечения заявки на участие в электронном аукционе, предусмотренный пунктом 29 части III «ИНФОРМАЦИОННАЯ КАРТА АУКЦИОНА В ЭЛЕКТРОННОЙ ФОРМЕ».
+                </order>
+                <endDate>2017-01-20T08:00:00+08:00</endDate>
+            </collecting>
+            <scoring>
+                <date>2017-01-24T00:00:00Z</date>
+            </scoring>
+            <bidding>
+                <date>2017-01-27T00:00:00+08:00</date>
+            </bidding>
+        </procedureInfo>
+        <lot>
+            <maxPrice>570416.67</maxPrice>
+            <currency>
+                <code>RUB</code>
+                <name>Российский рубль</name>
+            </currency>
+            <financeSource>средства федерального бюджета, выделенные Фонду социального страхования Российской Федерации на обеспечение инвалидов техническими средствами реабилитации.</financeSource>
+            <quantityUndefined>false</quantityUndefined>
+            <customerRequirements>
+                <customerRequirement>
+                    <customer>
+                        <regNum>03021000135</regNum>
+                        <consRegistryNum>004С0200</consRegistryNum>
+                        <fullName>ГОСУДАРСТВЕННОЕ УЧРЕЖДЕНИЕ-РЕГИОНАЛЬНОЕ ОТДЕЛЕНИЕ ФОНДА СОЦИАЛЬНОГО СТРАХОВАНИЯ РОССИЙСКОЙ ФЕДЕРАЦИИ ПО РЕСПУБЛИКЕ БУРЯТИЯ</fullName>
+                    </customer>
+                    <maxPrice>570416.67</maxPrice>
+                    <kladrPlaces>
+                        <kladrPlace>
+                            <kladr>
+                                <kladrType>R</kladrType>
+                                <kladrCode>03000000000</kladrCode>
+                                <fullName>Российская Федерация, Бурятия Респ</fullName>
+                            </kladr>
+                            <deliveryPlace>Республика Бурятия, по месту жительства Получателя или по месту нахождения пункта выдачи (по выбору Получателя на условиях DDP).</deliveryPlace>
+                        </kladrPlace>
+                    </kladrPlaces>
+                    <deliveryTerm>со дня, следующего за днем заключения государственного контракта и по 30 июня 2017 года.</deliveryTerm>
+                    <applicationGuarantee>
+                        <amount>5704.17</amount>
+                        <part>1.0</part>
+                        <procedureInfo>Участник электронного аукциона вносит денежные средства на лицевой счет участника закупки, открытый для проведения операций по обеспечению участия в электронном аукционе на счете оператора электронной площадки.
+                            Участие в электронном аукционе возможно при наличии на лицевом счете участника закупки, открытом для проведения операций по обеспечению участия в таком аукционе на счете оператора электронной площадки, денежных средств, в отношении которых не осуществлено блокирование операций по лицевому счету, в размере не менее чем размер обеспечения заявки на участие в электронном аукционе, предусмотренный пунктом 29 части III «ИНФОРМАЦИОННАЯ КАРТА АУКЦИОНА В ЭЛЕКТРОННОЙ ФОРМЕ».
+                        </procedureInfo>
+                        <settlementAccount>40302810581427000319</settlementAccount>
+                        <personalAccount>05024С02000</personalAccount>
+                        <bik>048142001</bik>
+                    </applicationGuarantee>
+                    <contractGuarantee>
+                        <amount>28520.83</amount>
+                        <part>5.0</part>
+                        <procedureInfo>Обеспечение исполнения контракта предоставляется участником электронного аукциона, с которым заключается контракт, путем внесения денежных средств на расчетный счет Заказчика    или безотзывной банковской гарантией, выданной банком, включенным в перечень, указанный в пункте 6.3.5 части II "ИНСТРУКЦИЯ УЧАСТНИКАМ АУКЦИОНА В ЭЛЕКТРОННОЙ ФОРМЕ".
+                            Способ обеспечения исполнения контракта определяется участником электронного аукциона самостоятельно.
+                            Участник электронного аукциона, с которым заключается контракт, размещает в ЕИС (на официальном сайте) документ, подтверждающий предоставление обеспечения исполнения контракта подписанный усиленной электронной подписью лица, имеющего право действовать от имени участника электронного аукциона с которым заключается контракт вместе с проектом контракта, подписанным указанным лицом.
+                            Обеспечение исполнения Контракта (банковская гарантия) должно быть действительно в течение 35 календарных дней после даты окончания действия настоящего Контракта
+                            Обеспечение исполнения Контракта (денежные средства) возвращаются Заказчиком Исполнителю в течение 10 банковских дней после даты окончания действия настоящего Контракта.
+                            В случае, если участником закупки, с которым заключается контракт, является государственное или муниципальное казенное учреждение, положения об обеспечении исполнения контракта не применяются.
+                        </procedureInfo>
+                        <settlementAccount>40302810581427000319</settlementAccount>
+                        <personalAccount>05024С02000</personalAccount>
+                        <bik>048142001</bik>
+                    </contractGuarantee>
+                    <tenderPlanInfo>
+                        <planNumber>44201603021000135001</planNumber>
+                        <positionNumber>П44201603021000135001000479</positionNumber>
+                    </tenderPlanInfo>
+                    <budgetFinancings>
+                        <budgetFinancing>
+                            <kbkCode2016>39310030420239570323</kbkCode2016>
+                            <year>2017</year>
+                            <sum>570416.67</sum>
+                        </budgetFinancing>
+                        <totalSum>570416.67</totalSum>
+                    </budgetFinancings>
+                </customerRequirement>
+            </customerRequirements>
+            <purchaseObjects>
+                <purchaseObject>
+                    <OKPD2>
+                        <code>32.50.22.129</code>
+                        <name>Приспособления ортопедические прочие</name>
+                    </OKPD2>
+                    <name>Кресло-стулья с санитарным оснащением (с колесами)
+                    </name>
+                    <OKEI>
+                        <code>796</code>
+                        <nationalCode>ШТ</nationalCode>
+                    </OKEI>
+                    <price>3508.66</price>
+                    <quantity>
+                        <value>70.00</value>
+                    </quantity>
+                    <sum>245606.2</sum>
+                </purchaseObject>
+                <purchaseObject>
+                    <OKPD2>
+                        <code>32.50.22.129</code>
+                        <name>Приспособления ортопедические прочие</name>
+                    </OKPD2>
+                    <name>Кресло-стулья с санитарным оснащением (без колес)
+                    </name>
+                    <OKEI>
+                        <code>796</code>
+                        <nationalCode>ШТ</nationalCode>
+                    </OKEI>
+                    <price>2784.5</price>
+                    <quantity>
+                        <value>90.00</value>
+                    </quantity>
+                    <sum>250605</sum>
+                </purchaseObject>
+                <purchaseObject>
+                    <OKPD2>
+                        <code>32.50.22.129</code>
+                        <name>Приспособления ортопедические прочие</name>
+                    </OKPD2>
+                    <name>Кресло-стулья с санитарным оснащением активного типа
+                    </name>
+                    <OKEI>
+                        <code>796</code>
+                        <nationalCode>ШТ</nationalCode>
+                    </OKEI>
+                    <price>5968.72</price>
+                    <quantity>
+                        <value>11.00</value>
+                    </quantity>
+                    <sum>65655.92</sum>
+                </purchaseObject>
+                <purchaseObject>
+                    <OKPD2>
+                        <code>32.50.22.129</code>
+                        <name>Приспособления ортопедические прочие</name>
+                    </OKPD2>
+                    <name>Кресло-стул с санитарным оснащением пассивного типа повышенной грузоподъемности (без колес)
+                    </name>
+                    <OKEI>
+                        <code>796</code>
+                        <nationalCode>ШТ</nationalCode>
+                    </OKEI>
+                    <price>2849.85</price>
+                    <quantity>
+                        <value>3.00</value>
+                    </quantity>
+                    <sum>8549.55</sum>
+                </purchaseObject>
+                <totalSum>570416.67</totalSum>
+            </purchaseObjects>
+            <preferenses>
+                <preferense>
+                    <code>8445051</code>
+                    <name>Участникам, заявки или окончательные предложения которых содержат предложения о поставке товаров в соответствии с приказом Минэкономразвития России № 155 от 25.03.2014</name>
+                    <prefValue>15.0</prefValue>
+                </preferense>
+            </preferenses>
+            <requirements>
+                <requirement>
+                    <code>8361040</code>
+                    <name>Единые требования к участникам (в соответствии с частью 1 Статьи 31 Федерального закона № 44-ФЗ)</name>
+                </requirement>
+                <requirement>
+                    <code>8632417</code>
+                    <name>Участники закупки могут быть только субъектами малого предпринимательства или социально ориентированными некоммерческими организациями (в соответствии с частью 3  статьи 30 Федерального закона № 44-ФЗ)</name>
+                </requirement>
+                <requirement>
+                    <code>8632415</code>
+                    <name>Единые требования к участникам (в соответствии  с частью 1.1 статьи 31 Федерального закона № 44-ФЗ)</name>
+                </requirement>
+            </requirements>
+            <restrictInfo>Участниками закупки могут быть только субъекты малого предпринимательства, социально ориентированные некоммерческие организации.</restrictInfo>
+            <restrictForeignsInfo>в соответствии с Постановлением Правительства РФ № 102 от 05.02.2015</restrictForeignsInfo>
+        </lot>
+        <attachments>
+            <attachment>
+                <publishedContentId>44EB467F137E003EE0530A86121FBBDF</publishedContentId>
+                <fileName>Документация.docx</fileName>
+                <fileSize>323.04 Кб</fileSize>
+                <docDescription>Документация</docDescription>
+                <url>http://zakupki.gov.ru/44fz/filestore/public/1.0/download/priz/file.html?uid=44EB467F137E003EE0530A86121FBBDF</url>
+            </attachment>
+            <attachment>
+                <publishedContentId>44DC9A1F4E930104E0530A86121F20FB</publishedContentId>
+                <fileName>Извещение АД.docx</fileName>
+                <fileSize>38.49 Кб</fileSize>
+                <docDescription>Извещение АД</docDescription>
+                <url>http://zakupki.gov.ru/44fz/filestore/public/1.0/download/priz/file.html?uid=44DC9A1F4E930104E0530A86121F20FB</url>
+            </attachment>
+        </attachments>
+    </ns2:fcsNotificationEF>
+</ns2:export>
