@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.0.0
 MinimumVisualStudioVersion = 10.0.0.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hujilion.Console", "Hujilion.Console\Hujilion.Console.csproj", "{AD9BA75E-B8A3-435D-AB9F-2B957BCBD969}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hujilion.Tests", "Hujilion.Tests\Hujilion.Tests.csproj", "{D354B063-FB75-4DC3-874E-0E2427217CE4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{AD9BA75E-B8A3-435D-AB9F-2B957BCBD969}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD9BA75E-B8A3-435D-AB9F-2B957BCBD969}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD9BA75E-B8A3-435D-AB9F-2B957BCBD969}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D354B063-FB75-4DC3-874E-0E2427217CE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D354B063-FB75-4DC3-874E-0E2427217CE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D354B063-FB75-4DC3-874E-0E2427217CE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D354B063-FB75-4DC3-874E-0E2427217CE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Xml.Linq;
+using System.Text.RegularExpressions;
+using Polly;
+using Polly.Timeout;
 
 namespace Hujilion.Console
 {
@@ -12,17 +15,30 @@ namespace Hujilion.Console
     {
         private const string ImportedFile = @"imported.txt";
 
-        public static void Main(string[] args)
+        public static void Main()
         {
-            System.Console.Out.WriteLine("йо");
-//            var purchases = Deserialize(File.ReadAllText(@"tender.xml")).ToArray();
-//            return;
-
             System.Console.Out.WriteLine("hi.");
 
+            var newMostExpensivePurchase = GetNewMostExpensivePurchase();
+            if (newMostExpensivePurchase == null)
+            {
+                System.Console.Out.WriteLine("no purchase to publish");
+                return;
+            }
+
+            Telegramer.Post(newMostExpensivePurchase);
+
+            System.Console.Out.WriteLine("over.");
+        }
+
+        private static Purchase GetNewMostExpensivePurchase()
+        {
             if (!File.Exists(ImportedFile))
                 File.WriteAllBytes(ImportedFile, new byte[0]);
+            else
+                File.Copy(ImportedFile, Path.ChangeExtension(ImportedFile, "bak"));
             var imported = new HashSet<string>(File.ReadAllLines(ImportedFile));
+            System.Console.Out.WriteLine($"last time I saw [{imported.Count}] zips");
 
             var listing = GetListing(new Uri("ftp://ftp.zakupki.gov.ru/fcs_regions"));
             var regionDirs = listing.Select(x => x.Split('/').Last().Trim()).Where(IsRegionDir);
@@ -30,12 +46,21 @@ namespace Hujilion.Console
             var newPurchases = new List<Purchase>();
             var scanned = 0;
             var newZips = 0;
-            foreach (var regionDir in regionDirs.Take(10))
+            foreach (var regionDir in regionDirs)
             {
                 var requestUri = new Uri($"ftp://ftp.zakupki.gov.ru/fcs_regions/{regionDir}/notifications/currMonth/");
                 var regionListing = GetListing(requestUri);
-                foreach (var zip in regionListing.Take(10))
+                foreach (var zip in regionListing)
                 {
+                    // notification_Burjatija_Resp_2016123100_2017010100_001.xml.zip
+                    var tillDateSubstring = Regex.Match(zip, @"^\D+?_(?:\d+)_(\d+)").Groups[1].Value.Substring(0, 8);
+                    var tillDate = DateTime.ParseExact(tillDateSubstring, "yyyyMMdd", null, DateTimeStyles.AssumeUniversal);
+                    if (tillDate < DateTime.UtcNow - TimeSpan.FromDays(2))
+                    {
+                        System.Console.Out.WriteLine($"too old, skipping: [{zip}], tillDate=[{tillDate}]");
+                        continue;
+                    }
+
                     var zipFullUri = new Uri($"ftp://ftp.zakupki.gov.ru/fcs_regions/{regionDir}/notifications/currMonth/{zip}");
                     if (!imported.Contains(zipFullUri.AbsoluteUri))
                     {
@@ -45,36 +70,57 @@ namespace Hujilion.Console
                         imported.Add(zipFullUri.AbsoluteUri);
                         newZips++;
                     }
+                    else
+                    {
+                        System.Console.Out.WriteLine($"saw it last time, skipping: [{zip}]");
+                    }
                     scanned++;
                 }
             }
-//            File.WriteAllLines(ImportedFile, imported);
+            File.WriteAllLines(ImportedFile, imported);
 
             System.Console.Out.WriteLine($"zips: new=[{newZips}], scanned=[{scanned}]");
             System.Console.Out.WriteLine($"purchases: new=[{newPurchases.Count}]");
 
             var mostExpensive = newPurchases.OrderByDescending(x => x.Price).FirstOrDefault();
-            if (mostExpensive!=null)
+            if (mostExpensive != null)
             {
                 System.Console.Out.WriteLine($"most expensive purchase is: title=[{mostExpensive.Title}], price=[{mostExpensive.Price}]");
+                return mostExpensive;
             }
             else
             {
                 System.Console.Out.WriteLine("no new purchases");
+                return null;
             }
-
-            System.Console.Out.WriteLine("over.");
         }
 
         private static IEnumerable<Purchase> GetPurchases(Uri zip)
         {
             System.Console.Out.WriteLine($"GetPurchases: [{zip.AbsoluteUri}]");
-            var zipBytes = Download(zip);
+
+            var timeout = Policy.Timeout<IEnumerable<byte>>(TimeSpan.FromSeconds(5),
+                                                            onTimeout: (context, span, t) =>
+                                                                       {
+                                                                           System.Console.Out.WriteLine($"Timeout zip downloading: [{zip}]");
+                                                                       });
+            var retry = Policy.Handle<TimeoutRejectedException>()
+                              .Retry(5,
+                                     onRetry: (exception, i) =>
+                                              {
+                                                  System.Console.Out.WriteLine($"Timeout zip downloading: "+
+                                                                               $"[{zip}] "+
+                                                                               $"tryCount=[{i}] " +
+                                                                               $"exception=[{exception.Message}]");
+                                              });
+            var retryOnTimeout = retry.Wrap(timeout);
+            var zipBytes = retryOnTimeout.Execute(() => Download(zip));
+
             var xmlNameToBytes = Unzip(zipBytes);
             System.Console.Out.WriteLine($"Unzipped [{xmlNameToBytes.Count}] files");
             foreach (var kv in xmlNameToBytes)
             {
-                foreach (var purchase in Deserialize(kv.Value))
+                foreach (var purchase in Xmler.Deserialize(kv.Value))
                 {
                     purchase.Zip = zip;
                     purchase.Xml = kv.Key;
@@ -99,18 +145,8 @@ namespace Hujilion.Console
         private static IEnumerable<byte> Download(Uri zip)
         {
             System.Console.Out.WriteLine($"Download: [{zip}]");
-            var request = new WebClient {Credentials = new NetworkCredential("free", "free")};
-            byte[] bytes;
-            try
-            {
-                bytes = request.DownloadData(zip);
-            }
-            catch (WebException e)
-            {
-                System.Console.Out.WriteLine($"Failed to download zip: [{zip}], [{e}]");
-                throw;
-            }
-            return bytes;
+            using (var webClient = new WebClient {Credentials = new NetworkCredential("free", "free")})
+                return webClient.DownloadData(zip);
         }
 
         private static IEnumerable<string> GetListing(Uri requestUri)
@@ -122,51 +158,13 @@ namespace Hujilion.Console
             var response = (FtpWebResponse) request.GetResponse();
             System.Console.Out.WriteLine($"response: [{response.StatusCode}]");
             var listing = new StreamReader(response.GetResponseStream()).ReadToEnd()
-                                                                        .Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries)
+                                                                        .Split(new[] {"\r\n"}, StringSplitOptions.RemoveEmptyEntries)
                                                                         .Select(x => x.Trim());
             response.Close();
             return listing;
         }
 
         private static bool IsRegionDir(string x) => !x.Contains(".") && char.IsUpper(x[0]);
-
-        private static IEnumerable<Purchase> Deserialize(string xml)
-        {
-            var result = new List<Purchase>();
-            try
-            {
-                var xdoc = StripNS(XElement.Parse(xml));
-                foreach (var xpurchase in xdoc.Elements())
-                {
-                    var nameLocalName = xpurchase.Name.LocalName;
-                    if (!nameLocalName.ToLower().Contains("notification") || nameLocalName.ToLower().Contains("cancel"))
-                    {
-                        System.Console.Out.WriteLine($"skipping non-notification node: [{nameLocalName}]");
-                        continue;
-                    }
-                    result.Add(new Purchase
-                               {
-                                   Title = xpurchase.Element("purchaseObjectInfo").Value,
-                                   Number = xpurchase.Element("purchaseNumber").Value,
-                                   Price = decimal.Parse(xpurchase.Descendants("lot").Single().Element("maxPrice").Value.Trim())
-                               });
-                }
-            }
-            catch (Exception e)
-            {
-                var dumpFile = Path.GetTempFileName();
-                File.WriteAllText(dumpFile, xml);
-                System.Console.Out.WriteLine($"Failed to deserialize xml; dump is at [{dumpFile}]");
-                throw;
-            }
-            return result;
-        }
-
-        public static XElement StripNS(XElement root)
-        {
-            return new XElement(root.Name.LocalName,
-                                root.HasElements ? root.Elements().Select(StripNS) : (object) root.Value);
-        }
     }
 
     public class Purchase
@@ -179,6 +177,7 @@ namespace Hujilion.Console
         public string Title { get; set; }
         public decimal Price { get; set; }
         public DateTimeOffset Seen { get; set; }
+        public Uri Uri { get; set; }
     }
 
     //ftp://free@ftp.zakupki.gov.ru/fcs_regions/Burjatija_Resp/notifications/currMonth/notification_Burjatija_Resp_2016123100_2017010100_001.xml.zip

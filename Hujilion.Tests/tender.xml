@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:export xmlns="http://zakupki.gov.ru/oos/types/1" xmlns:ns2="http://zakupki.gov.ru/oos/export/1" xmlns:ns3="http://zakupki.gov.ru/oos/printform/1">
+<ns2:export xmlns="http://zakupki.gov.ru/oos/types/1" xmlns:ns2="http://zakupki.gov.ru/oos/export/1">
     <ns2:fcsNotificationEM schemeVersion="6.4">
         <id>10829489</id>
         <purchaseNumber>0302100013516000408</purchaseNumber>

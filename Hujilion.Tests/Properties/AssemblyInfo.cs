@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("Hujilion.Console")]
+[assembly: AssemblyTitle("Hujilion.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Hujilion.Console")]
+[assembly: AssemblyProduct("Hujilion.Tests")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[assembly: Guid("AD9BA75E-B8A3-435D-AB9F-2B957BCBD969")]
+[assembly: Guid("D354B063-FB75-4DC3-874E-0E2427217CE4")]
 
 // Version information for an assembly consists of the following four values:
 //
