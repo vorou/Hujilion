@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using Serilog;
 
 namespace Hujilion.Console
 {
@@ -19,7 +20,7 @@ namespace Hujilion.Console
                     var nameLocalName = xpurchase.Name.LocalName;
                     if (!nameLocalName.ToLower().Contains("notification") || nameLocalName.ToLower().Contains("cancel") || nameLocalName.ToLower().Contains("datechange"))
                     {
-                        System.Console.Out.WriteLine($"skipping non-notification node: [{nameLocalName}]");
+                        Log.Information($"skipping non-notification node: [{nameLocalName}]");
                         continue;
                     }
                     result.Add(new Purchase
@@ -36,7 +37,7 @@ namespace Hujilion.Console
             {
                 var dumpFile = Path.GetTempFileName();
                 File.WriteAllText(dumpFile, xml);
-                System.Console.Out.WriteLine($"Failed to deserialize xml; dump is at [{dumpFile}]");
+                Log.Information($"Failed to deserialize xml; dump is at [{dumpFile}]");
                 throw;
             }
             return result;

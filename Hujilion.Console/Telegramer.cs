@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 
@@ -10,9 +11,15 @@ namespace Hujilion.Console
     {
         public static void Post(Purchase newMostExpensivePurchase, bool debug = false)
         {
+            // ReSharper disable once RedundantAssignment
             var chatId = "@hujilion";
-            if (debug)
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+#pragma warning disable 162
+            if (Program.Debug || debug)
+#pragma warning restore 162
                 chatId = "201466217";
+            Log.Information($"Will post to chat: [{chatId}]");
+
             var telegram = new TelegramBotClient(File.ReadAllText(@"C:\hujilion-api-key.txt"));
             telegram.OnMessage += async (sender, eventArgs) =>
                                   {
@@ -20,11 +27,11 @@ namespace Hujilion.Console
                                   };
             telegram.OnReceiveError += (sender, eventArgs) =>
                                        {
-                                           System.Console.Out.WriteLine($"shit: [{eventArgs.ApiRequestException.Message}]");
+                                           Log.Information($"shit: [{eventArgs.ApiRequestException.Message}]");
                                        };
             telegram.OnReceiveGeneralError += (sender, eventArgs) =>
                                               {
-                                                  System.Console.Out.WriteLine($"shit: [{eventArgs.Exception.Message}]");
+                                                  Log.Information($"shit: [{eventArgs.Exception.Message}]");
                                               };
             telegram.StartReceiving();
             if (!telegram.IsReceiving)
@@ -39,7 +46,6 @@ namespace Hujilion.Console
         public static string Format(Purchase newMostExpensivePurchase) => $"Это стоит примерно хаджиллион:\r\n" +
                                                                           $"[{newMostExpensivePurchase.Title}]({newMostExpensivePurchase.Uri.AbsoluteUri})\r\n" +
                                                                           $"за {FormatPrice(newMostExpensivePurchase.Price)} ₽";
-
 
         public static string FormatPrice(decimal price)
         {

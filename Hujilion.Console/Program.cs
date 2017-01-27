@@ -8,37 +8,58 @@ using System.Net;
 using System.Text.RegularExpressions;
 using Polly;
 using Polly.Timeout;
+using Serilog;
 
 namespace Hujilion.Console
 {
-    internal class Program
+    public static class Program
     {
+        public const bool Debug = true;
         private const string ImportedFile = @"imported.txt";
 
         public static void Main()
         {
-            System.Console.Out.WriteLine("hi.");
+            InitLogging();
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+                                                          {
+                                                              Log.Fatal(args.ExceptionObject.ToString());
+                                                          };
+
+            Log.Information("hi.");
 
             var newMostExpensivePurchase = GetNewMostExpensivePurchase();
             if (newMostExpensivePurchase == null)
             {
-                System.Console.Out.WriteLine("no purchase to publish");
+                Log.Information("no purchase to publish");
                 return;
             }
 
             Telegramer.Post(newMostExpensivePurchase);
 
-            System.Console.Out.WriteLine("over.");
+            Log.Information("over.");
+        }
+
+        private static void InitLogging()
+        {
+            Log.Logger = new LoggerConfiguration().MinimumLevel.Debug()
+                                                  .WriteTo.ColoredConsole()
+                                                  .WriteTo.RollingFile(@"C:\logs\hujilion-{Date}.log")
+                                                  .CreateLogger();
         }
 
         private static Purchase GetNewMostExpensivePurchase()
         {
-            if (!File.Exists(ImportedFile))
-                File.WriteAllBytes(ImportedFile, new byte[0]);
-            else
-                File.Copy(ImportedFile, Path.ChangeExtension(ImportedFile, "bak"));
-            var imported = new HashSet<string>(File.ReadAllLines(ImportedFile));
-            System.Console.Out.WriteLine($"last time I saw [{imported.Count}] zips");
+            var imported = new HashSet<string>();
+
+            if (!Debug)
+            {
+                if (!File.Exists(ImportedFile))
+                    File.WriteAllBytes(ImportedFile, new byte[0]);
+                else
+                    File.Copy(ImportedFile, Path.ChangeExtension(ImportedFile, "bak"));
+                imported = new HashSet<string>(File.ReadAllLines(ImportedFile));
+            }
+            Log.Information($"last time I saw [{imported.Count}] zips");
 
             var listing = GetListing(new Uri("ftp://ftp.zakupki.gov.ru/fcs_regions"));
             var regionDirs = listing.Select(x => x.Split('/').Last().Trim()).Where(IsRegionDir);
@@ -46,7 +67,7 @@ namespace Hujilion.Console
             var newPurchases = new List<Purchase>();
             var scanned = 0;
             var newZips = 0;
-            foreach (var regionDir in regionDirs)
+            foreach (var regionDir in regionDirs.Take(1))
             {
                 var requestUri = new Uri($"ftp://ftp.zakupki.gov.ru/fcs_regions/{regionDir}/notifications/currMonth/");
                 var regionListing = GetListing(requestUri);
@@ -57,7 +78,7 @@ namespace Hujilion.Console
                     var tillDate = DateTime.ParseExact(tillDateSubstring, "yyyyMMdd", null, DateTimeStyles.AssumeUniversal);
                     if (tillDate < DateTime.UtcNow - TimeSpan.FromDays(2))
                     {
-                        System.Console.Out.WriteLine($"too old, skipping: [{zip}], tillDate=[{tillDate}]");
+                        Log.Information($"too old, skipping: [{zip}], tillDate=[{tillDate}]");
                         continue;
                     }
 
@@ -66,49 +87,52 @@ namespace Hujilion.Console
                     {
                         var toAdd = GetPurchases(zipFullUri).ToArray();
                         newPurchases.AddRange(toAdd);
-                        System.Console.Out.WriteLine($"new zip: [{zip}], purchases=[{toAdd.Count()}]");
+                        Log.Information($"new zip: [{zip}], purchases=[{toAdd.Count()}]");
                         imported.Add(zipFullUri.AbsoluteUri);
                         newZips++;
                     }
                     else
                     {
-                        System.Console.Out.WriteLine($"saw it last time, skipping: [{zip}]");
+                        Log.Information($"saw it last time, skipping: [{zip}]");
                     }
                     scanned++;
                 }
             }
-            File.WriteAllLines(ImportedFile, imported);
+            if (!Debug)
+            {
+                File.WriteAllLines(ImportedFile, imported);
+            }
 
-            System.Console.Out.WriteLine($"zips: new=[{newZips}], scanned=[{scanned}]");
-            System.Console.Out.WriteLine($"purchases: new=[{newPurchases.Count}]");
+            Log.Information($"zips: new=[{newZips}], scanned=[{scanned}]");
+            Log.Information($"purchases: new=[{newPurchases.Count}]");
 
             var mostExpensive = newPurchases.OrderByDescending(x => x.Price).FirstOrDefault();
             if (mostExpensive != null)
             {
-                System.Console.Out.WriteLine($"most expensive purchase is: title=[{mostExpensive.Title}], price=[{mostExpensive.Price}]");
+                Log.Information($"most expensive purchase is: title=[{mostExpensive.Title}], price=[{mostExpensive.Price}]");
                 return mostExpensive;
             }
             else
             {
-                System.Console.Out.WriteLine("no new purchases");
+                Log.Information("no new purchases");
                 return null;
             }
         }
 
         private static IEnumerable<Purchase> GetPurchases(Uri zip)
         {
-            System.Console.Out.WriteLine($"GetPurchases: [{zip.AbsoluteUri}]");
+            Log.Information($"GetPurchases: [{zip.AbsoluteUri}]");
 
             var timeout = Policy.Timeout<IEnumerable<byte>>(TimeSpan.FromSeconds(5),
                                                             onTimeout: (context, span, t) =>
                                                                        {
-                                                                           System.Console.Out.WriteLine($"Timeout zip downloading: [{zip}]");
+                                                                           Log.Information($"Timeout zip downloading: [{zip}]");
                                                                        });
             var retry = Policy.Handle<TimeoutRejectedException>()
                               .Retry(5,
                                      onRetry: (exception, i) =>
                                               {
-                                                  System.Console.Out.WriteLine($"Timeout zip downloading: "+
+                                                  Log.Information($"Timeout zip downloading: "+
                                                                                $"[{zip}] "+
                                                                                $"tryCount=[{i}] " +
                                                                                $"exception=[{exception.Message}]");
@@ -117,7 +141,7 @@ namespace Hujilion.Console
             var zipBytes = retryOnTimeout.Execute(() => Download(zip));
 
             var xmlNameToBytes = Unzip(zipBytes);
-            System.Console.Out.WriteLine($"Unzipped [{xmlNameToBytes.Count}] files");
+            Log.Information($"Unzipped [{xmlNameToBytes.Count}] files");
             foreach (var kv in xmlNameToBytes)
             {
                 foreach (var purchase in Xmler.Deserialize(kv.Value))
@@ -125,7 +149,7 @@ namespace Hujilion.Console
                     purchase.Zip = zip;
                     purchase.Xml = kv.Key;
                     purchase.Seen = DateTimeOffset.Now;
-                    System.Console.Out.WriteLine($"new purchase: [{purchase}]");
+                    Log.Information($"new purchase: [{purchase}]");
                     yield return purchase;
                 }
             }
@@ -144,19 +168,19 @@ namespace Hujilion.Console
 
         private static IEnumerable<byte> Download(Uri zip)
         {
-            System.Console.Out.WriteLine($"Download: [{zip}]");
+            Log.Information($"Download: [{zip}]");
             using (var webClient = new WebClient {Credentials = new NetworkCredential("free", "free")})
                 return webClient.DownloadData(zip);
         }
 
         private static IEnumerable<string> GetListing(Uri requestUri)
         {
-            System.Console.Out.WriteLine($"GetListing: [{requestUri.AbsoluteUri}]");
+            Log.Information($"GetListing: [{requestUri.AbsoluteUri}]");
             var request = (FtpWebRequest) WebRequest.Create(requestUri);
             request.Credentials = new NetworkCredential("free", "free");
             request.Method = WebRequestMethods.Ftp.ListDirectory;
             var response = (FtpWebResponse) request.GetResponse();
-            System.Console.Out.WriteLine($"response: [{response.StatusCode}]");
+            Log.Information($"response: [{response.StatusCode}]");
             var listing = new StreamReader(response.GetResponseStream()).ReadToEnd()
                                                                         .Split(new[] {"\r\n"}, StringSplitOptions.RemoveEmptyEntries)
                                                                         .Select(x => x.Trim());
