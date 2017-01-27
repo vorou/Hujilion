@@ -20,11 +20,6 @@ namespace Hujilion.Console
         public static void Main()
         {
             InitLogging();
-            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
-                                                          {
-                                                              Log.Fatal(args.ExceptionObject.ToString());
-                                                          };
-
             Log.Information("hi.");
 
             var newMostExpensivePurchase = GetNewMostExpensivePurchase();
@@ -36,7 +31,7 @@ namespace Hujilion.Console
 
             Telegramer.Post(newMostExpensivePurchase);
 
-            Log.Information("over.");
+            Log.Information("bye.");
         }
 
         private static void InitLogging()
@@ -45,6 +40,7 @@ namespace Hujilion.Console
                                                   .WriteTo.ColoredConsole()
                                                   .WriteTo.RollingFile(@"C:\logs\hujilion-{Date}.log")
                                                   .CreateLogger();
+            AppDomain.CurrentDomain.UnhandledException += (_, e) => Log.Fatal(e.ExceptionObject.ToString());
         }
 
         private static Purchase GetNewMostExpensivePurchase()

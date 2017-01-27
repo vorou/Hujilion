@@ -11,28 +11,18 @@ namespace Hujilion.Console
     {
         public static void Post(Purchase newMostExpensivePurchase, bool debug = false)
         {
-            // ReSharper disable once RedundantAssignment
             var chatId = "@hujilion";
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-#pragma warning disable 162
             if (Program.Debug || debug)
-#pragma warning restore 162
                 chatId = "201466217";
             Log.Information($"Will post to chat: [{chatId}]");
 
             var telegram = new TelegramBotClient(File.ReadAllText(@"C:\hujilion-api-key.txt"));
-            telegram.OnMessage += async (sender, eventArgs) =>
+            telegram.OnMessage += async (_, eventArgs) =>
                                   {
                                       await telegram.SendTextMessageAsync(eventArgs.Message.Chat.Id, eventArgs.Message.Chat.Id.ToString());
                                   };
-            telegram.OnReceiveError += (sender, eventArgs) =>
-                                       {
-                                           Log.Information($"shit: [{eventArgs.ApiRequestException.Message}]");
-                                       };
-            telegram.OnReceiveGeneralError += (sender, eventArgs) =>
-                                              {
-                                                  Log.Information($"shit: [{eventArgs.Exception.Message}]");
-                                              };
+            telegram.OnReceiveError += (_, e) => Log.Error($"shit: [{e.ApiRequestException.Message}]");
+            telegram.OnReceiveGeneralError += (_, e) => Log.Error($"shit: [{e.Exception.Message}]");
             telegram.StartReceiving();
             if (!telegram.IsReceiving)
                 throw new InvalidOperationException("can't start Telegram");
